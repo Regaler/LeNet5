@@ -52,73 +52,58 @@ class ReLU():
 		dX = np.array(dout, copy=True)
 		dX[X <= 0] = 0
 		return dX
-		
-def Softmax(Y_pred):
-	"""Compute softmax values for each sets of scores in X."""
-	maxes = np.amax(Y_pred, axis=1)
-	maxes = maxes.reshape(maxes.shape[0], 1)
-	e = np.exp(Y_pred - maxes)
-	dist = e / np.sum(e, axis=1).reshape(e.shape[0], 1)
-	#return np.sum(dist, axis=1)
-	#return np.argmax(dist, axis=1)
-	return dist
 
-def CrossEntropyLoss(Y_pred, Y_true):
+class Softmax():
+	def __init__(self):
+		print("Build Softmax")
+
+	def _forward(self, X):
+		maxes = np.amax(X, axis=1)
+		maxes = maxes.reshape(maxes.shape[0], 1)
+		e = np.exp(X - maxes)
+		dist = e / np.sum(e, axis=1).reshape(e.shape[0], 1)
+		return dist
+
+	def _backward(self, dout, cache):
+		pass
+
+def NLLLoss(Y_pred, Y_true):
 	"""
 	
 	"""
-	loss = 0
-	m = Y_pred.shape[0]
-	loss = -(1.0/m) * np.sum(Y_true*np.log(Y_pred) + (1-Y_true)*np.log(1-Y_pred))
+	loss = 0.0
+	M = np.sum(Y_pred*Y_true, axis=1)
+	for e in M:
+		if e == 0:
+			loss += 500
+		else:
+			loss += -np.log(e)
 	return loss
+
+def MakeOneHot(Y):
+	Z = np.zeros((N, D_out))
+	Z[np.arange(N), Y] = 1
+	return Z
 
 class TwoLayerNet():
 	def __init__(self, D_in, H, D_out):
 		self.FC1 = FC(N, D_in, H)
 		self.ReLU1 = ReLU()
 		self.FC2 = FC(N, H, D_out)
+		self.softmax = Softmax()
 
 	def forward(self, X):
 		h1 = self.FC1._forward(X)
 		a1 = self.ReLU1._forward(h1)
 		h2 = self.FC2._forward(a1)
-		return h2
+		a2 = self.softmax._forward(h2)
+		return a2
 
 	def backward(self):
 		pass
 
 	def loss_function(self, Y_pred, Y_true):
 		pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# LOSS FUNCTION TEST
-"""
-Y_pred = np.array([[0.1,0.8,0.1],[0.9,0.05,0.05]])
-Y_true = np.array([[1,0,0],[0.5,0.5,0]])
-#Y_pred = np.array([0.1,0.8,0.1])
-#Y_true = np.array([0,1,0])
-loss = CrossEntropyLoss(Y_pred,Y_true)
-print(loss)
-"""
 
 # FC FORWARD TEST
 """
@@ -128,10 +113,10 @@ print(out)
 """
 
 # TWO LAYER NET FORWARD TEST
-"""
 H = 100
+Y_train = MakeOneHot(Y_train)
 model = TwoLayerNet(D_in, H, D_out)
-out = model.forward(X_train)
-A = Softmax(out)
-print(A)
-"""
+Y_pred = model.forward(X_train)
+#print(Y_pred)
+loss = NLLLoss(Y_pred, Y_train)
+print(loss)

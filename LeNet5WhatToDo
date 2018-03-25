@@ -1,0 +1,25 @@
+--------------------------------------
+1. Conv_2d
+2. Activations: ReLU Sigmoid tanh
+3. Pooling: Average, Max
+4. Dropout
+5. Crossentropy
+6. SGD w/ momentum
+7. weight decay (l2 reg)
+8. Fully connected
+(optional: Batch Normalization)
+9. Model Save/Load
+10. Learning Observation
+
+Imp.
+0. Trainer Class / Network Class / Layer Class Template
+1. Logistic Regression (5, 6, 7, 8)
+2. LeNet5 (2, ~~~)
+
+
+
+Tips: MNIST 100 samples per each label
+PYTHON, using NUMPY (SCIPY conv2d)
+--> Assignment-like
+--> Refer to UFLDL
+--------------------------------------
