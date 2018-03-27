@@ -3,9 +3,9 @@ import util
 from layer import FC, ReLU, Softmax
 
 class TwoLayerNet():
-	"""
-	Simple 2 layer NN
-	"""
+	
+	#Simple 2 layer NN
+	
 	def __init__(self, N, D_in, H, D_out):
 		self.FC1 = FC(N, D_in, H)
 		self.ReLU1 = ReLU()
@@ -25,6 +25,7 @@ class TwoLayerNet():
 
 	def backward(self):
 		self.get_dout()
+		#print("dout is: " + str(self.dout))
 		dout = self.FC2._backward(self.dout)
 		dout = self.ReLU1._backward(dout)
 		dout = self.FC1._backward(dout)
@@ -36,7 +37,7 @@ class TwoLayerNet():
 
 	def get_dout(self):
 		self.dout = self.scores - 1
-		return self.dout
+		return
 
 	def get_params(self):
 		return [self.FC1.W, self.FC1.b, self.FC2.W, self.FC2.b]
