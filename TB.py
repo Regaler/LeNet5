@@ -5,6 +5,7 @@ import util
 import layer
 import nn
 import optimizer
+import pickle
 
 """
 (1) Prepare Data: Load, Shuffle, Normalization, Batching, Preprocessing
@@ -41,5 +42,9 @@ for i in range(1500):
 
 	model.backward()
 	optim.step()
+
+weights = model.get_params()
+with open("weights.pkl","wb") as f:
+	pickle.dump(weights, f)
 
 util.draw_losses(losses)

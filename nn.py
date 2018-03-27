@@ -1,12 +1,13 @@
 import numpy as np
 import util
 from layer import FC, ReLU, Softmax
+import pickle
 
 class TwoLayerNet():
 	
 	#Simple 2 layer NN
 	
-	def __init__(self, N, D_in, H, D_out):
+	def __init__(self, N, D_in, H, D_out, weights=''):
 		self.FC1 = FC(N, D_in, H)
 		self.ReLU1 = ReLU()
 		self.FC2 = FC(N, H, D_out)
@@ -14,6 +15,13 @@ class TwoLayerNet():
 
 		self.scores = np.array([])
 		self.dout = None
+
+		if weights == '':
+			pass
+		else:
+			with open(weights,'rb') as f:
+				params = pickle.load(f)
+				self.set_params(params)
 
 	def forward(self, X):
 		h1 = self.FC1._forward(X)
@@ -41,3 +49,6 @@ class TwoLayerNet():
 
 	def get_params(self):
 		return [self.FC1.W, self.FC1.b, self.FC2.W, self.FC2.b]
+
+	def set_params(self, params):
+		[self.FC1.W, self.FC1.b, self.FC2.W, self.FC2.b] = params
