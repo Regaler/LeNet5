@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import util
 import layer
 import nn
+import optimizer
 
 """
 (1) Prepare Data: Load, Shuffle, Normalization, Batching, Preprocessing
@@ -31,7 +32,10 @@ H=100
 model = nn.TwoLayerNet(N, D_in, H, D_out)
 
 losses = []
-for i in range(1000):
+#optim = optimizer.SGD(model.get_params(), lr=0.001)
+optim = optimizer.SGDMomentum(model.get_params(), lr=0.001, momentum=0.99)
+
+for i in range(200):
 	Y_pred = model.forward(X_train)
 
 	loss = model.get_loss(Y_pred, Y_train)
@@ -39,5 +43,7 @@ for i in range(1000):
 	losses.append(loss)
 
 	model.backward()
+
+	optim.step()
 
 util.draw_losses(losses)

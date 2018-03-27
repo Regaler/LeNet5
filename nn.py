@@ -37,3 +37,6 @@ class TwoLayerNet():
 	def get_dout(self):
 		self.dout = self.scores - 1
 		return self.dout
+
+	def get_params(self):
+		return [self.FC1.W, self.FC1.b, self.FC2.W, self.FC2.b]

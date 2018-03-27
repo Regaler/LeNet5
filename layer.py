@@ -1,5 +1,4 @@
 import numpy as np
-lr = 0.001
 
 class FC():
 	"""
@@ -7,28 +6,32 @@ class FC():
 	"""
 	def __init__(self, N, D_in, D_out):
 		#print("Build FC")
-		self.W = np.random.rand(D_in, D_out) - 0.5
-		self.b = np.array(D_out) - 0.5
 		self.cache = None
+		self.W = {'val': np.random.rand(D_in, D_out) - 0.5, 'grad': 0}
+		self.b = {'val': np.array(D_out) - 0.5, 'grad': 0}
 
 	def _forward(self, X):
 		#print("FC: _forward")
-		out = np.dot(X, self.W) + self.b
+		out = np.dot(X, self.W['val']) + self.b['val']
 		self.cache = X
 		return out
 
 	def _backward(self, dout):
 		#print("FC: _backward")
 		X = self.cache
-		dX = np.dot(dout, self.W.T).reshape(X.shape)
-		dW = np.dot(X.reshape(X.shape[0], np.prod(X.shape[1:])).T, dout)
-		db = np.sum(dout, axis=0)
+		dX = np.dot(dout, self.W['val'].T).reshape(X.shape)
 
-		# Update the parameters
-		self.W -= lr*dW
-		self.b -= lr*db
+		self.W['grad'] = np.dot(X.reshape(X.shape[0], np.prod(X.shape[1:])).T, dout)
+		self.b['grad'] = np.sum(dout, axis=0)
+		#self._update_params()
 		return dX
 
+	
+	def _update_params(self, lr=0.001):
+		# Update the parameters
+		self.W['val'] -= lr*self.W['grad']
+		self.b['val'] -= lr*self.b['grad']
+	
 class ReLU():
 	"""
 	ReLU activation layer
