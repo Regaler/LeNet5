@@ -53,6 +53,38 @@ class ReLU():
 		dX[X <= 0] = 0
 		return dX
 
+class Sigmoid():
+	"""
+	Sigmoid activation layer
+	"""
+	def __init__(self):
+		self.cache = None
+
+	def _forward(self, X):
+		self.cache = X
+		return 1 / (1 + np.exp(-X))
+
+	def _backward(self, dout):
+		X = self.cache
+		dX = dout*X*(1-X)
+		return dX
+
+class tanh():
+	"""
+	tanh activation layer
+	"""
+	def __init__(self):
+		self.cache = X
+
+	def _forward(self, X):
+		self.cache = X
+		return np.tanh(X)
+
+	def _backward(self, X):
+		X = self.cache
+		dX = dout*(1 - np.tanh(X)**2)
+		return dX
+
 class Softmax():
 	"""
 	Softmax activation layer

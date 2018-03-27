@@ -24,4 +24,3 @@ class SGDMomentum():
 		for i in range(self.l):
 			self.velocities[i] = self.rho*self.velocities[i] + (1-self.rho)*self.parameters[i]['grad']
 			self.parameters[i]['val'] -= self.lr*self.velocities[i]
-			
