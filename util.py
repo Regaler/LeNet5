@@ -14,7 +14,7 @@ def NLLLoss(Y_pred, Y_true):
 			loss += 500
 		else:
 			loss += -np.log(e)
-	return loss/N
+	return loss
 
 def MakeOneHot(Y, D_out):
 	N = Y.shape[0]
@@ -24,7 +24,7 @@ def MakeOneHot(Y, D_out):
 
 def draw_losses(losses):
 	t = np.arange(len(losses))
-	plt.plot(t, losses, 'r^')
+	plt.plot(t, losses)
 	plt.show()
 
 def CrossEntropyLoss(Y_pred, Y_true):

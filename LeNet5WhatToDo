@@ -1,15 +1,23 @@
 --------------------------------------
-1. Conv_2d
+DONE
 2. Activations: ReLU Sigmoid tanh
-3. Pooling: Average, Max
-4. Dropout
-5. Crossentropy
 6. SGD w/ momentum
-7. weight decay (l2 reg)
 8. Fully connected
-(optional: Batch Normalization)
 9. Model Save/Load
 10. Learning Observation
+5. Crossentropy
+
+
+
+TODO
+1. Conv_2d
+3. Pooling: Average, Max
+4. Dropout
+7. weight decay (l2 reg)
+-> change backprop formalism into original delta-based method
+-> change get_dout part. Currently it only supports CrossEntropy=Softmax+NLL
+-> Get the test accuracy for FCnet now
+
 
 Imp.
 0. Trainer Class / Network Class / Layer Class Template
