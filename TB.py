@@ -25,16 +25,21 @@ D_out = 10
 print("batch_size: " + str(batch_size) + ", D_in: " + str(D_in) + ", D_out: " + str(D_out))
 
 ### TWO LAYER NET FORWARD TEST ###
-H=400
-model = nn.TwoLayerNet(batch_size, D_in, H, D_out)
+#H=400
+#model = nn.TwoLayerNet(batch_size, D_in, H, D_out)
+H1=300
+H2=100
+model = nn.ThreeLayerNet(batch_size, D_in, H1, H2, D_out)
+
 
 losses = []
-optim = optimizer.SGD(model.get_params(), lr=0.0001)
-#optim = optimizer.SGDMomentum(model.get_params(), lr=0.001, momentum=0.99)
+#optim = optimizer.SGD(model.get_params(), lr=0.0001)
+optim = optimizer.SGDMomentum(model.get_params(), lr=0.0001, momentum=0.99)
 criterion = loss.CrossEntropyLoss()
 
 # TRAIN
-for i in range(12000):
+EPOCH = 25000
+for i in range(EPOCH):
 	# get batch, make onehot
 	X_batch, Y_batch = util.get_batch(X_train, Y_train, batch_size)
 	Y_batch = util.MakeOneHot(Y_batch, D_out)
@@ -44,10 +49,12 @@ for i in range(12000):
 	loss, dout = criterion.get(Y_pred, Y_batch)
 	model.backward(dout)
 	optim.step()
-
 	if i % 100 == 0:
-		print("epoch: %s, loss: %s" % (i, loss))
+		print("%s%% epoch: %s, loss: %s" % (100*i/EPOCH,i, loss))
 		losses.append(loss)
+		#weights = model.get_params()
+		#print(weights[2]['grad'])
+		#print(dout)
 
 
 # save params
@@ -55,7 +62,7 @@ weights = model.get_params()
 with open("weights.pkl","wb") as f:
 	pickle.dump(weights, f)
 
-util.draw_losses(losses)
+util.draw_losses(losses[10:])
 
 
 

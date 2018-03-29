@@ -7,8 +7,8 @@ class FC():
 	def __init__(self, N, D_in, D_out):
 		#print("Build FC")
 		self.cache = None
-		self.W = {'val': np.random.rand(D_in, D_out) - 0.5, 'grad': 0}
-		self.b = {'val': np.array(D_out) - 0.5, 'grad': 0}
+		self.W = {'val': np.random.randn(D_in, D_out), 'grad': 0}
+		self.b = {'val': np.random.randn(D_out), 'grad': 0}
 
 	def _forward(self, X):
 		#print("FC: _forward")
@@ -20,13 +20,11 @@ class FC():
 		#print("FC: _backward")
 		X = self.cache
 		dX = np.dot(dout, self.W['val'].T).reshape(X.shape)
-
 		self.W['grad'] = np.dot(X.reshape(X.shape[0], np.prod(X.shape[1:])).T, dout)
 		self.b['grad'] = np.sum(dout, axis=0)
 		#self._update_params()
 		return dX
 
-	
 	def _update_params(self, lr=0.001):
 		# Update the parameters
 		self.W['val'] -= lr*self.W['grad']

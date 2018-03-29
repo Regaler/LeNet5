@@ -9,11 +9,12 @@ def NLLLoss(Y_pred, Y_true):
 	N = Y_pred.shape[0]
 	M = np.sum(Y_pred*Y_true, axis=1)
 	for e in M:
+		#print(e)
 		if e == 0:
 			loss += 500
 		else:
 			loss += -np.log(e)
-	return loss
+	return loss/N
 
 class CrossEntropyLoss():
 	def __init__(self):
