@@ -17,8 +17,7 @@ class SGDMomentum():
 		for param in self.parameters:
 			self.velocities.append(np.zeros(param['val'].shape))
 		self.lr = lr
-		#self.rho = momentum
-		self.rho = 0.8
+		self.rho = momentum
 
 	def step(self):
 		for i in range(self.l):

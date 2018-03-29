@@ -96,16 +96,10 @@ class Softmax():
 	def _forward(self, X):
 		#print("Softmax: _forward")
 		maxes = np.amax(X, axis=1)
-		#print(X[0])
-		#print(maxes[0])
 		maxes = maxes.reshape(maxes.shape[0], 1)
 		e = np.exp(X - maxes)
 		dist = e / np.sum(e, axis=1).reshape(e.shape[0], 1)
 		return dist
 
 	def _backward(self, dout):
-		"""
-		Regard Softmax and NLLLoss always come together
-		"""
-		#print("Softmax: _backward")
-		return
+		pass

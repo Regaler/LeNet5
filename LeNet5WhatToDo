@@ -10,13 +10,11 @@ DONE
 
 
 TODO
+4. Dropout
+7. L2 Regularizaiton
 1. Conv_2d
 3. Pooling: Average, Max
-4. Dropout
-7. weight decay (l2 reg)
 -> change backprop formalism into original delta-based method
--> change get_dout part. Currently it only supports CrossEntropy=Softmax+NLL
--> Get the test accuracy for FCnet now
 
 
 Imp.
