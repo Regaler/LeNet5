@@ -25,11 +25,11 @@ D_out = 10
 print("batch_size: " + str(batch_size) + ", D_in: " + str(D_in) + ", D_out: " + str(D_out))
 
 ### TWO LAYER NET FORWARD TEST ###
-#H=400
-#model = nn.TwoLayerNet(batch_size, D_in, H, D_out)
-H1=300
-H2=100
-model = nn.ThreeLayerNet(batch_size, D_in, H1, H2, D_out)
+H=400
+model = nn.TwoLayerNet(batch_size, D_in, H, D_out)
+#H1=300
+#H2=100
+#model = nn.ThreeLayerNet(batch_size, D_in, H1, H2, D_out)
 
 
 losses = []
@@ -76,4 +76,4 @@ print("TRAIN--> Correct: " + str(result.count(0)) + " out of " + str(X_train.sha
 Y_pred = model.forward(X_test)
 result = np.argmax(Y_pred, axis=1) - Y_test
 result = list(result)
-print("TEST--> Correct: " + str(result.count(0)) + " out of " + str(X_train.shape[0]) + ", acc=" + str(result.count(0)/X_train.shape[0]))
+print("TEST--> Correct: " + str(result.count(0)) + " out of " + str(X_test.shape[0]) + ", acc=" + str(result.count(0)/X_test.shape[0]))
