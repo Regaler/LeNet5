@@ -120,3 +120,66 @@ class Dropout():
 		X, M = self.cache
 		dX = dout*M/self.p
 		return dX
+
+class Conv():
+	"""
+	Conv layer
+	"""
+	def __init__(self, Cin, Cout, F, stride=1, padding=0, bias=True):
+		self.Cin = Cin
+		self.Cout = Cout
+		self.F = F
+		self.S = stride
+		self.W = np.random.randn(Cout, Cin, F, F)
+		self.b = np.random.randn(Cout)
+		self.cache = None
+
+	def _forward(self, X):
+		(N, Cin, H, W) = X.shape
+		H_ = H - self.F + 1
+		W_ = W - self.F + 1
+		Y = np.zeros((N, self.Cout, H_, W_))
+
+		for n in range(N):
+			for c in range(self.Cout):
+				for h in range(H_):
+					for w in range(W_):
+						Y[n, c, h, w] = np.sum(X[n, :, h:h+self.F, w:w+self.F] * self.W[c, :, :, :]) + self.b[c]
+
+		self.cache = X
+		return Y
+
+	def _backward(self, dout):
+		# dout (N,Cout,H_,W_)
+		# W (Cout, Cin, F, F)
+		X = self.cache
+		(N, Cin, H, W) = X.shape
+		H_ = H - self.F + 1
+		W_ = W - self.F + 1
+		W_rot = np.rot90(np.rot90(self.W))
+
+		dX = np.zeros(X.shape)
+		dW = np.zeros(self.W.shape)
+		db = np.zeros(self.b.shape)
+
+		# dW
+		for co in range(self.Cout):
+			for ci in range(Cin):
+				for h in range(self.F):
+					for w in range(self.F):
+						dW[co, ci, h, w] = np.sum(X[:,ci,h:h+H_,w:w+W_] * dout[:,co,:,:])
+
+		# db
+		for co in range(self.Cout):
+			db[co] = np.sum(dout[:,co,:,:])
+
+		dout_pad = np.pad(dout, ((0,0),(0,0),(2,2),(2,2)), 'constant')
+		print("dout_pad.shape: " + str(dout_pad.shape))
+		# dX
+		for n in range(N):
+			for ci in range(Cin):
+				for h in range(H):
+					for w in range(W):
+						dX[n, ci, h, w] = np.sum(W_rot[:,ci,:,:] * dout_pad[n, :, h:h+self.F,w:w+self.F])
+
+		return dX, dW, db

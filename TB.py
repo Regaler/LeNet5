@@ -12,6 +12,7 @@ import loss
 (1) Prepare Data: Load, Shuffle, Normalization, Batching, Preprocessing
 """
 
+"""
 #mnist.init()
 X_train, Y_train, X_test, Y_test = mnist.load()
 X_train, X_test = X_train/float(255), X_test/float(255)
@@ -75,3 +76,13 @@ Y_pred = model.forward(X_test)
 result = np.argmax(Y_pred, axis=1) - Y_test
 result = list(result)
 print("TEST--> Correct: " + str(result.count(0)) + " out of " + str(X_test.shape[0]) + ", acc=" + str(result.count(0)/X_test.shape[0]))
+"""
+
+""" CONV TEST
+X = np.random.randn(7,3,4,4) # N, Cin, W, H
+conv = layer.Conv(3, 10, 3) # Cin, Cout, F
+Y = conv._forward(X)
+print(Y.shape)
+dX, dW, db = conv._backward(Y)
+print("dX.shape: " + str(dX.shape))
+"""
