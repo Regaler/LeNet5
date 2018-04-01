@@ -1,6 +1,6 @@
 import numpy as np
 import util
-from layer import FC, ReLU, Softmax
+from layer import FC, ReLU, Softmax, Dropout
 import pickle
 
 class Net():

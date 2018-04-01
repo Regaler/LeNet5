@@ -6,12 +6,11 @@ DONE
 9. Model Save/Load
 10. Learning Observation
 5. Crossentropy
-
+4. Dropout
+7. L2 Regularizaiton
 
 
 TODO
-4. Dropout
-7. L2 Regularizaiton
 1. Conv_2d
 3. Pooling: Average, Max
 -> change backprop formalism into original delta-based method

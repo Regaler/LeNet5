@@ -101,3 +101,22 @@ class Softmax():
 
 	def _backward(self, dout):
 		pass
+
+class Dropout():
+	"""
+	Dropout layer
+	"""
+	def __init__(self, p=1):
+		self.cache = None
+		self.p = p
+
+	def _forward(self, X):
+		M = (np.random.rand(*X.shape) < self.p) / self.p
+		self.cache = X, M
+		return X*M
+
+
+	def _backward(self, dout):
+		X, M = self.cache
+		dX = dout*M/self.p
+		return dX
