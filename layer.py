@@ -133,8 +133,10 @@ class Conv():
 		self.W = np.random.randn(Cout, Cin, F, F)
 		self.b = np.random.randn(Cout)
 		self.cache = None
+		self.pad = padding
 
 	def _forward(self, X):
+		X = np.pad(X, ((0,0),(0,0),(self.pad,self.pad),(self.pad,self.pad)), 'constant')
 		(N, Cin, H, W) = X.shape
 		H_ = H - self.F + 1
 		W_ = W - self.F + 1
