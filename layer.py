@@ -185,3 +185,31 @@ class Conv():
 						dX[n, ci, h, w] = np.sum(W_rot[:,ci,:,:] * dout_pad[n, :, h:h+self.F,w:w+self.F])
 
 		return dX, dW, db
+
+class MaxPool():
+	def __init__(self, F, stride):
+		self.F = F
+		self.S = stride
+		self.cache = None
+
+	def _forward(self, X):
+		# X: (N, Cin, H, W): maxpool along 3rd, 4th dim
+		(N,Cin,H,W) = X.shape
+		F = self.F
+		W_ = int(float(W)/F)
+		H_ = int(float(H)/F)
+		Y = np.zeros((N,Cin,W_,H_))
+		M = np.zeros(X.shape) # mask
+		for n in range(N):
+			for cin in range(Cin):
+				for w_ in range(W_):
+					for h_ in range(H_):
+						Y[n,cin,w_,h_] = np.max(X[n,cin,F*w_:F*(w_+1),F*h_:F*(h_+1)])
+						i,j = np.unravel_index(X[n,cin,F*w_:F*(w_+1),F*h_:F*(h_+1)].argmax(), (F,F))
+						M[n,cin,F*w_+i,F*h_+j] = 1
+		self.cache = M
+		return Y
+
+	def _backward(self, dout):
+		M = self.cache
+		return dout*M

@@ -80,8 +80,12 @@ print("TEST--> Correct: " + str(result.count(0)) + " out of " + str(X_test.shape
 
 
 X = np.random.randn(7,3,4,4) # N, Cin, W, H
-conv = layer.Conv(3, 10, 3) # Cin, Cout, F
-Y = conv._forward(X)
-print(Y.shape)
-dX, dW, db = conv._backward(Y)
-print("dX.shape: " + str(dX.shape))
+#conv = layer.Conv(3, 10, 3) # Cin, Cout, F
+#Y = conv._forward(X)
+#print(Y.shape)
+#dX, dW, db = conv._backward(Y)
+#print("dX.shape: " + str(dX.shape))
+maxpool = layer.MaxPool(2,2)
+Y = maxpool._forward(X)
+print(X[0,0,:,:])
+print(Y[0,0,:,:])
