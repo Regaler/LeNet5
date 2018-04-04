@@ -29,3 +29,15 @@ class CrossEntropyLoss():
 		dout = prob.copy()
 		dout[np.arange(N), Y_serial] -= 1
 		return loss, dout
+
+class SoftmaxLoss():
+	def __init__(self):
+		pass
+
+	def get(self, Y_pred, Y_true):
+		N = Y_pred.shape[0]
+		loss = NLLLoss(Y_pred, Y_true)
+		Y_serial = np.argmax(Y_true, axis=1)
+		dout = Y_pred.copy()
+		dout[np.arange(N), Y_serial] -= 1
+		return loss, dout

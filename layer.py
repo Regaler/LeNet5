@@ -4,10 +4,11 @@ class FC():
 	"""
 	Fully connected layer
 	"""
-	def __init__(self, N, D_in, D_out):
+	def __init__(self, D_in, D_out):
 		#print("Build FC")
 		self.cache = None
-		self.W = {'val': np.random.randn(D_in, D_out), 'grad': 0}
+		#self.W = {'val': np.random.randn(D_in, D_out), 'grad': 0}
+		self.W = {'val': np.random.normal(0.0, np.sqrt(2/D_in), (D_in,D_out)), 'grad': 0}
 		self.b = {'val': np.random.randn(D_out), 'grad': 0}
 
 	def _forward(self, X):
@@ -89,18 +90,32 @@ class Softmax():
 	"""
 	def __init__(self):
 		#print("Build Softmax")
-		pass
+		self.cache = None
 
 	def _forward(self, X):
 		#print("Softmax: _forward")
 		maxes = np.amax(X, axis=1)
 		maxes = maxes.reshape(maxes.shape[0], 1)
-		e = np.exp(X - maxes)
-		dist = e / np.sum(e, axis=1).reshape(e.shape[0], 1)
-		return dist
+		Y = np.exp(X - maxes)
+		Z = Y / np.sum(Y, axis=1).reshape(Y.shape[0], 1)
+		self.cache = (X, Y, Z)
+		return Z # distribution
 
 	def _backward(self, dout):
-		pass
+		X, Y, Z = self.cache
+		dZ = np.zeros(X.shape)
+		dY = np.zeros(X.shape)
+		dX = np.zeros(X.shape)
+		N = X.shape[0]
+		for n in range(N):
+			i = np.argmax(Z[n])
+			dZ[n,:] = np.diag(Z[n]) - np.outer(Z[n],Z[n])
+			M = np.zeros((N,N))
+			M[:,i] = 1
+			dY[n,:] = np.eye(N) - M
+		dX = np.dot(dout,dZ)
+		dX = np.dot(dX,dY)
+		return dX
 
 class Dropout():
 	"""
@@ -130,8 +145,9 @@ class Conv():
 		self.Cout = Cout
 		self.F = F
 		self.S = stride
-		self.W = np.random.randn(Cout, Cin, F, F)
-		self.b = np.random.randn(Cout)
+		#self.W = {'val': np.random.randn(Cout, Cin, F, F), 'grad': 0}
+		self.W = {'val': np.random.normal(0.0,np.sqrt(2/Cin),(Cout,Cin,F,F)), 'grad': 0} # Xavier Initialization
+		self.b = {'val': np.random.randn(Cout), 'grad': 0}
 		self.cache = None
 		self.pad = padding
 
@@ -146,7 +162,7 @@ class Conv():
 			for c in range(self.Cout):
 				for h in range(H_):
 					for w in range(W_):
-						Y[n, c, h, w] = np.sum(X[n, :, h:h+self.F, w:w+self.F] * self.W[c, :, :, :]) + self.b[c]
+						Y[n, c, h, w] = np.sum(X[n, :, h:h+self.F, w:w+self.F] * self.W['val'][c, :, :, :]) + self.b['val'][c]
 
 		self.cache = X
 		return Y
@@ -158,11 +174,11 @@ class Conv():
 		(N, Cin, H, W) = X.shape
 		H_ = H - self.F + 1
 		W_ = W - self.F + 1
-		W_rot = np.rot90(np.rot90(self.W))
+		W_rot = np.rot90(np.rot90(self.W['val']))
 
 		dX = np.zeros(X.shape)
-		dW = np.zeros(self.W.shape)
-		db = np.zeros(self.b.shape)
+		dW = np.zeros(self.W['val'].shape)
+		db = np.zeros(self.b['val'].shape)
 
 		# dW
 		for co in range(self.Cout):
@@ -175,16 +191,18 @@ class Conv():
 		for co in range(self.Cout):
 			db[co] = np.sum(dout[:,co,:,:])
 
-		dout_pad = np.pad(dout, ((0,0),(0,0),(2,2),(2,2)), 'constant')
-		print("dout_pad.shape: " + str(dout_pad.shape))
+		dout_pad = np.pad(dout, ((0,0),(0,0),(self.F,self.F),(self.F,self.F)), 'constant')
+		#print("dout_pad.shape: " + str(dout_pad.shape))
 		# dX
 		for n in range(N):
 			for ci in range(Cin):
 				for h in range(H):
 					for w in range(W):
+						#print("self.F.shape: %s", self.F)
+						#print("%s, W_rot[:,ci,:,:].shape: %s, dout_pad[n,:,h:h+self.F,w:w+self.F].shape: %s" % ((n,ci,h,w),W_rot[:,ci,:,:].shape, dout_pad[n,:,h:h+self.F,w:w+self.F].shape))
 						dX[n, ci, h, w] = np.sum(W_rot[:,ci,:,:] * dout_pad[n, :, h:h+self.F,w:w+self.F])
 
-		return dX, dW, db
+		return dX
 
 class MaxPool():
 	def __init__(self, F, stride):
@@ -212,4 +230,12 @@ class MaxPool():
 
 	def _backward(self, dout):
 		M = self.cache
-		return dout*M
+		(N,Cin,H,W) = M.shape
+		dout = np.array(dout)
+		#print("dout.shape: %s, M.shape: %s" % (dout.shape, M.shape))
+		dX = np.zeros(M.shape)
+		for n in range(N):
+			for c in range(Cin):
+				#print("(n,c): (%s,%s)" % (n,c))
+				dX[n,c,:,:] = dout[n,c,:,:].repeat(2, axis=0).repeat(2, axis=1)
+		return dX*M
