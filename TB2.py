@@ -73,7 +73,7 @@ result = list(result)
 print("TRAIN--> Correct: " + str(result.count(0)) + " out of " + str(X_train.shape[0]) + ", acc=" + str(result.count(0)/X_train.shape[0]))
 
 # TEST SET ACC
-Y_pred = model.forward(X_test[:100])
+Y_pred = model.forward(X_test)
 result = np.argmax(Y_pred, axis=1) - Y_test
 result = list(result)
 print("TEST--> Correct: " + str(result.count(0)) + " out of " + str(X_test.shape[0]) + ", acc=" + str(result.count(0)/X_test.shape[0]))
