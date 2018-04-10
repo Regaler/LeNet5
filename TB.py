@@ -12,7 +12,6 @@ import loss
 (1) Prepare Data: Load, Shuffle, Normalization, Batching, Preprocessing
 """
 
-"""
 #mnist.init()
 X_train, Y_train, X_test, Y_test = mnist.load()
 X_train, X_test = X_train/float(255), X_test/float(255)
@@ -50,11 +49,11 @@ for i in range(ITER):
 	loss, dout = criterion.get(Y_pred, Y_batch)
 	model.backward(dout)
 	optim.step()
-	
+
 	if i % 100 == 0:
 		print("%s%% iter: %s, loss: %s" % (100*i/ITER,i, loss))
 		losses.append(loss)
-	
+
 
 # save params
 weights = model.get_params()
@@ -76,4 +75,3 @@ Y_pred = model.forward(X_test)
 result = np.argmax(Y_pred, axis=1) - Y_test
 result = list(result)
 print("TEST--> Correct: " + str(result.count(0)) + " out of " + str(X_test.shape[0]) + ", acc=" + str(result.count(0)/X_test.shape[0]))
-"""

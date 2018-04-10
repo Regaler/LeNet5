@@ -37,31 +37,31 @@ criterion = loss.SoftmaxLoss()
 # Train
 ITER = 30000
 for i in range(ITER):
-	# get batch, make onehot
-	X_batch, Y_batch = util.get_batch(X_train, Y_train, batch_size)
-	Y_batch = util.MakeOneHot(Y_batch, D_out)
+    # get batch, make onehot
+    X_batch, Y_batch = util.get_batch(X_train, Y_train, batch_size)
+    Y_batch = util.MakeOneHot(Y_batch, D_out)
 
-	# forward, loss, backward, step
-	Y_pred = model.forward(X_batch)
-	loss, dout = criterion.get(Y_pred, Y_batch)
-	model.backward(dout)
-	optim.step()
+    # forward, loss, backward, step
+    Y_pred = model.forward(X_batch)
+    loss, dout = criterion.get(Y_pred, Y_batch)
+    model.backward(dout)
+    optim.step()
 
-	print("%s%% iter: %s, loss: %s" % (100*i/ITER,i, loss))
-	losses.append(loss)
-	"""
-	if i % 100 == 0:
-		print("%s%% iter: %s, loss: %s" % (100*i/ITER,i, loss))
-		losses.append(loss)
-	"""
+    print("%s%% iter: %s, loss: %s" % (100*i/ITER,i, loss))
+    losses.append(loss)
+    """
+    if i % 100 == 0:
+        print("%s%% iter: %s, loss: %s" % (100*i/ITER,i, loss))
+        losses.append(loss)
+    """
 
 # save params
 weights = model.get_params()
 with open("weights.pkl","wb") as f:
-	pickle.dump(weights, f)
+    pickle.dump(weights, f)
 
 with open("losses.pkl","wb") as f:
-	pickle.dump(losses, f)
+    pickle.dump(losses, f)
 
 #util.draw_losses(losses)
 
